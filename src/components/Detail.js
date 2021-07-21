@@ -1,9 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import {useParams} from 'react-router-dom'
+import db from '../firebase'
+import { setMovies } from '../features/movie/movieSlice';
 
 function Detail() {
+
+    const { id } = useParams();
+    const { movie, setMovie} = useState();
+
+    useEffect(() => {
+        // Grab movie info from db
+        db.collection("movies")
+        .doc(id)
+        .get()
+        .then(doc => {
+            if(doc.exists){
+                //save the movie data
+                setMovies(doc.data())
+            } else {
+                //redirect home page
+                
+            }
+        })
+    }, [])
+
     return (
-        <Container>
+        <Container >
             <Background>
                 <img src="https://prod-ripcut-delivery.disney-plus.net/v1/variant/disney/4F39B7E16726ECF419DD7C49E011DD95099AA20A962B0B10AA1881A70661CE45/scale?width=1440&aspectRatio=1.78&format=jpeg" />
             </Background>
@@ -42,7 +65,7 @@ const Container = styled.div`
     min-height: calc(100vh - 70px);
     padding: 0 calc(3.5vw + 5px);
     position: relative;
-
+    overflow: hidden;
 `
 
 const Background = styled.div`
